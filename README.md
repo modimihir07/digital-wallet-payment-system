@@ -7,20 +7,22 @@
 [![JWT](https://img.shields.io/badge/JWT-jjwt%200.12.5-black?style=flat-square&logo=jsonwebtokens)](https://jwt.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
-A reliable, concurrent digital wallet backend built with **Java 17**, **Spring Boot 3**, and **MySQL 8**. 
+A reliable, concurrent digital wallet backend and web application built with **Java 17**, **Spring Boot 3**, and **MySQL 8**. 
 
-This repository was created as an academic capstone for a **Database Management Systems (DBMS)** college course. Rather than relying on heavy ORMs that hide how queries execute, the project uses **raw JDBC** and **HikariCP** so that transaction boundaries, locks, and constraints are explicitly defined and controlled.
+This repository was created as an academic capstone for a **Database Management Systems (DBMS)** college course. Rather than relying on heavy ORMs that hide how queries execute, the project uses **raw JDBC** and **HikariCP** so that transaction boundaries, row-level locks, and constraints are explicitly defined and controlled. It also includes a responsive single-page web frontend served directly by Spring Boot.
 
 ---
 
 ## Table of Contents
 - [Project Overview](#project-overview)
+- [Web Interface & Features](#web-interface--features)
 - [Academic Context & DBMS Concepts](#academic-context--dbms-concepts)
 - [Architecture & Design](#architecture--design)
 - [Database Schema](#database-schema)
 - [Concurrency & Deadlock Prevention](#concurrency--deadlock-prevention)
 - [API Endpoints](#api-endpoints)
 - [Database Setup Scripts](#database-setup-scripts)
+- [Demo Credentials](#demo-credentials)
 - [Local Installation & Setup](#local-installation--setup)
 - [Running the Tests](#running-the-tests)
 - [Postman Collection](#postman-collection)
@@ -39,6 +41,21 @@ This project solves these real-world challenges through:
 - **Double-entry ledger**: Every transfer produces two non-destructive, append-only journal entries (`DEBIT` and `CREDIT`) with snapshot balances.
 - **Database triggers for auditing**: Automatic `AFTER UPDATE` triggers record all balance and status changes to an `audit_log` table in JSON format.
 - **Analytical views**: Precomputed database views calculate user statements, daily transaction volumes, and top spenders directly inside MySQL.
+- **Integrated Web UI**: A modern, lightweight frontend served directly out of Spring Boot with no build steps or external dependencies.
+
+---
+
+## Web Interface & Features
+
+The project includes a single-page web frontend built with vanilla HTML5, CSS3, and ES6+ JavaScript. It lives inside `src/main/resources/static/` and is served directly at `http://localhost:8080/`.
+
+- **Fintech Aesthetic**: Dark mode by default with an instant Light mode toggle (saved to `localStorage`), subtle glassmorphism cards, and responsive layouts.
+- **Authentication**: JWT-based login and registration flows with client-side form validation and role detection.
+- **Interactive Dashboard**: Real-time balance display with count-up animation, a 7-day spending trends line chart powered by Chart.js, quick actions (Top-Up modal), and recent ledger activity.
+- **P2P Money Transfers**: Peer-to-peer transfers with client-generated idempotency keys (`crypto.randomUUID()`), client-side balance validation, and instant modal transaction receipts.
+- **Bill Payments**: Searchable directory of utility bills with category filters (`All`, `Unpaid`, `Paid`) and atomic one-click bill settlement.
+- **Account Statements**: Paginated double-entry ledger history with search and transaction type filters, plus one-click CSV statement export.
+- **Admin Management Console**: Role-protected portal (`ROLE_ADMIN`) featuring wallet freeze/unfreeze controls, real-time database trigger audit logs, platform transaction volume charts, and top user leaderboards.
 
 ---
 
@@ -64,7 +81,7 @@ Many university software projects treat the database simply as passive table sto
 The application follows a clean layered design where each tier has a distinct, single responsibility:
 
 ```
-Client (Postman / Browser)
+Client (Web Browser / Postman)
          │
          ▼
 JwtAuthFilter (Checks Bearer JWT & validates roles)
@@ -186,9 +203,28 @@ mysql -u root -p wallet_db < sql/04_triggers.sql
 # 4. Reporting views
 mysql -u root -p wallet_db < sql/05_views.sql
 
-# 5. Demo seed data (demo users and sample bills)
+# 5. Base seed data (initial test users and roles)
 mysql -u root -p wallet_db < sql/02_seed.sql
+
+# 6. Realistic demo dataset (15 users, 8 merchants, 40 bills, 100 txns, 200 ledger rows)
+mysql -u root -p wallet_db < sql/06_seed_demo_data.sql
 ```
+
+---
+
+## Demo Credentials
+
+If you load [`sql/06_seed_demo_data.sql`](sql/06_seed_demo_data.sql), the following pre-configured accounts are available out of the box:
+
+| Role | Name | Email | Password | Initial Balance |
+|---|---|---|---|---|
+| **Admin** | Rohan Sharma | `rohan.sharma@example.com` | `Password@123` | ₹25,000.00 |
+| **Admin** | Priya Patel | `priya.patel@example.com` | `Password@123` | ₹18,500.00 |
+| **User** | Vikram Singh | `vikram.singh@example.com` | `Password@123` | ₹12,000.00 |
+| **User** | Sneha Deshmukh | `sneha.deshmukh@example.com` | `Password@123` | ₹8,450.00 |
+| **User** | Ananya Iyer | `ananya.iyer@example.com` | `Password@123` | ₹15,750.00 |
+
+*(All 15 seed accounts use the default password `Password@123`)*
 
 ---
 
@@ -211,14 +247,14 @@ export JWT_SECRET="your-256-bit-secret-key-here-must-be-very-long-and-secure"
 
 ### Build and Run
 ```bash
-# Compile and build JAR
+# Compile and package application
 mvn clean package -DskipTests
 
 # Start the Spring Boot application
 mvn spring-boot:run
 ```
 
-Once started, the application runs on `http://localhost:8080`.
+Once started, open `http://localhost:8080` in any web browser to access the frontend application, or explore the REST endpoints via Swagger at `http://localhost:8080/swagger-ui.html`.
 
 ---
 

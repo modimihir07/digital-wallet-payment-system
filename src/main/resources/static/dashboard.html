@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | VaultPay Digital Wallet</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      letter-spacing: -0.02em;
+    }
+    @media (max-width: 900px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- Sticky Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-inner">
+      <a href="dashboard.html" class="nav-brand">
+        <img src="assets/logo.svg" alt="VaultPay Logo">
+        <span>VaultPay</span>
+        <span class="badge-beta">DBMS</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="dashboard.html" class="nav-link active">
+          <i data-lucide="layout-dashboard"></i> Dashboard
+        </a>
+        <a href="transfer.html" class="nav-link">
+          <i data-lucide="send"></i> Send Money
+        </a>
+        <a href="bills.html" class="nav-link">
+          <i data-lucide="receipt"></i> Bills
+        </a>
+        <a href="statement.html" class="nav-link">
+          <i data-lucide="file-text"></i> Statement
+        </a>
+        <a href="admin.html" class="nav-link admin-only-link" style="display: none;">
+          <i data-lucide="shield"></i> Admin
+        </a>
+      </nav>
+
+      <div class="nav-actions">
+        <div class="user-badge">
+          <div class="user-avatar">U</div>
+          <span class="nav-user-email">User</span>
+        </div>
+
+        <button class="btn-icon theme-toggle-btn" title="Toggle Theme">
+          <span class="theme-toggle-icon"><i data-lucide="sun"></i></span>
+        </button>
+
+        <button class="btn-icon logout-btn" title="Sign Out">
+          <i data-lucide="log-out"></i>
+        </button>
+
+        <button class="btn-icon mobile-nav-toggle" title="Menu">
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Dashboard Content -->
+  <main class="main-content">
+    <!-- Top Grid: Hero Card + 7-Day Chart -->
+    <div class="dashboard-grid">
+      <!-- Balance Hero Card -->
+      <div class="card card-hero">
+        <div class="card-header">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <span id="wallet-id-badge" style="font-size: 0.85rem; font-weight: 700; color: var(--accent-cyan); font-family: var(--font-mono);">
+              Wallet #--
+            </span>
+            <span id="wallet-status-pill" class="badge badge-success">ACTIVE</span>
+          </div>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">INR / Rupee</span>
+        </div>
+
+        <div class="hero-balance-wrap">
+          <span class="hero-balance-label">Total Available Balance</span>
+          <div class="hero-balance-amount">
+            <span class="hero-currency">₹</span>
+            <span id="wallet-balance">0.00</span>
+          </div>
+        </div>
+
+        <div class="quick-actions">
+          <a href="transfer.html" class="action-btn">
+            <i data-lucide="arrow-up-right"></i> Send Money
+          </a>
+          <button class="action-btn open-topup-btn">
+            <i data-lucide="plus-circle"></i> Top Up
+          </button>
+          <a href="bills.html" class="action-btn">
+            <i data-lucide="credit-card"></i> Pay Bills
+          </a>
+        </div>
+      </div>
+
+      <!-- Weekly Analytics Chart -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title"><i data-lucide="activity"></i> 7-Day Spending Trend</h3>
+            <p class="card-subtitle">Aggregated daily debits across your account</p>
+          </div>
+        </div>
+        <div style="height: 200px; position: relative;">
+          <canvas id="activity-chart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats Metric Cards -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">
+          <span>Sent This Month</span>
+          <i data-lucide="trending-down" style="color: var(--accent-rose); width: 18px; height: 18px;"></i>
+        </div>
+        <div id="stat-total-sent" class="stat-value" style="color: var(--accent-rose);">₹0.00</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">
+          <span>Received This Month</span>
+          <i data-lucide="trending-up" style="color: var(--accent-emerald); width: 18px; height: 18px;"></i>
+        </div>
+        <div id="stat-total-received" class="stat-value" style="color: var(--accent-emerald);">₹0.00</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label">
+          <span>Pending Bills</span>
+          <i data-lucide="clock" style="color: var(--accent-amber); width: 18px; height: 18px;"></i>
+        </div>
+        <div id="unpaid-bills-count" class="stat-value" style="color: var(--accent-amber);">0</div>
+      </div>
+    </div>
+
+    <!-- Recent Transactions Table Card -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h3 class="card-title"><i data-lucide="history"></i> Recent Activity</h3>
+          <p class="card-subtitle">Double-entry ledger records with post-transaction balance</p>
+        </div>
+        <a href="statement.html" class="btn btn-secondary btn-sm">
+          View Full Statement &rarr;
+        </a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Balance After</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="recent-transactions-tbody">
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 2rem;">
+                <span class="spinner"></span> Loading transactions...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal: Simulated Top-Up -->
+<div id="modal-topup" class="modal-backdrop">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 class="modal-title">Top Up Wallet</h3>
+      <button class="btn-icon close-modal-btn" title="Close">&times;</button>
+    </div>
+
+    <form id="form-topup">
+      <div class="form-group">
+        <label class="form-label" for="topup-amount">Amount (INR)</label>
+        <input type="number" id="topup-amount" class="form-control" placeholder="1000.00" step="0.01" min="1" required>
+        <p class="form-helper">Simulates payment gateway cash-in to your wallet balance.</p>
+
+        <div class="chip-grid">
+          <button type="button" class="chip-btn topup-chip" data-amount="500">+₹500</button>
+          <button type="button" class="chip-btn topup-chip" data-amount="1000">+₹1,000</button>
+          <button type="button" class="chip-btn topup-chip" data-amount="2000">+₹2,000</button>
+          <button type="button" class="chip-btn topup-chip" data-amount="5000">+₹5,000</button>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-modal-btn">Cancel</button>
+        <button type="submit" id="btn-submit-topup" class="btn btn-primary">Confirm Top-Up</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

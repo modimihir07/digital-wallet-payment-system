@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Money | VaultPay</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .transfer-layout {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .balance-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="nav-inner">
+      <a href="dashboard.html" class="nav-brand">
+        <img src="assets/logo.svg" alt="VaultPay Logo">
+        <span>VaultPay</span>
+        <span class="badge-beta">DBMS</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="dashboard.html" class="nav-link">
+          <i data-lucide="layout-dashboard"></i> Dashboard
+        </a>
+        <a href="transfer.html" class="nav-link active">
+          <i data-lucide="send"></i> Send Money
+        </a>
+        <a href="bills.html" class="nav-link">
+          <i data-lucide="receipt"></i> Bills
+        </a>
+        <a href="statement.html" class="nav-link">
+          <i data-lucide="file-text"></i> Statement
+        </a>
+        <a href="admin.html" class="nav-link admin-only-link" style="display: none;">
+          <i data-lucide="shield"></i> Admin
+        </a>
+      </nav>
+
+      <div class="nav-actions">
+        <div class="user-badge">
+          <div class="user-avatar">U</div>
+          <span class="nav-user-email">User</span>
+        </div>
+
+        <button class="btn-icon theme-toggle-btn" title="Toggle Theme">
+          <span class="theme-toggle-icon"><i data-lucide="sun"></i></span>
+        </button>
+
+        <button class="btn-icon logout-btn" title="Sign Out">
+          <i data-lucide="log-out"></i>
+        </button>
+
+        <button class="btn-icon mobile-nav-toggle" title="Menu">
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="transfer-layout">
+      <div style="margin-bottom: 1.5rem;">
+        <h1 style="font-size: 1.85rem; font-weight: 800; letter-spacing: -0.02em;">Peer-to-Peer Transfer</h1>
+        <p style="color: var(--text-secondary); font-size: 0.95rem;">
+          Send money securely with row-level locks and deadlock prevention
+        </p>
+      </div>
+
+      <!-- Warning if Frozen -->
+      <div id="wallet-frozen-warning" style="display: none; margin-bottom: 1.25rem; padding: 1rem 1.25rem; background: rgba(244, 63, 94, 0.15); border: 1px solid var(--accent-rose); border-radius: var(--radius-md); color: var(--accent-rose); font-size: 0.9rem;">
+        <i data-lucide="alert-octagon" style="vertical-align: middle; margin-right: 0.35rem;"></i>
+        <strong>Wallet Frozen:</strong> Your wallet is currently locked by the administrator. Debits are temporarily disabled.
+      </div>
+
+      <div class="card">
+        <!-- Balance Strip -->
+        <div class="balance-indicator">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Sender Account</div>
+            <div id="sender-wallet-id" style="font-weight: 700; font-size: 0.95rem;">Wallet #--</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Available Balance</div>
+            <div id="sender-balance-display" class="table-mono" style="font-weight: 800; font-size: 1.25rem; color: var(--accent-emerald);">₹0.00</div>
+          </div>
+        </div>
+
+        <form id="form-transfer">
+          <div class="form-group">
+            <label class="form-label" for="transfer-recipient">Recipient Wallet ID</label>
+            <input type="number" id="transfer-recipient" class="form-control" placeholder="e.g. 2" min="1" required>
+            <p class="form-helper">Enter the numerical ID of the destination wallet.</p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="transfer-amount">Transfer Amount (INR)</label>
+            <input type="number" id="transfer-amount" class="form-control table-mono" placeholder="500.00" step="0.01" min="0.01" required>
+
+            <div class="chip-grid">
+              <button type="button" class="chip-btn transfer-chip" data-amount="100">+₹100</button>
+              <button type="button" class="chip-btn transfer-chip" data-amount="500">+₹500</button>
+              <button type="button" class="chip-btn transfer-chip" data-amount="1000">+₹1,000</button>
+              <button type="button" class="chip-btn transfer-chip" data-amount="2000">+₹2,000</button>
+              <button type="button" class="chip-btn transfer-chip" data-amount="5000">+₹5,000</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="transfer-remarks">Remarks (Optional)</label>
+            <input type="text" id="transfer-remarks" class="form-control" placeholder="Lunch, rent, groceries, etc.">
+          </div>
+
+          <!-- Defensive Guarantee Callout -->
+          <div style="margin: 1.5rem 0; padding: 0.85rem; border-radius: var(--radius-md); background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">
+            <div style="font-weight: 700; color: var(--primary); margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.35rem;">
+              <i data-lucide="shield" style="width: 14px; height: 14px;"></i> ACID &amp; Concurrency Guarantees
+            </div>
+            This transfer runs inside a single DB transaction with ordered row locks (<span class="table-mono">SELECT ... FOR UPDATE</span>) and client idempotency protection.
+          </div>
+
+          <button type="submit" id="btn-submit-transfer" class="btn btn-primary btn-block btn-lg">
+            <i data-lucide="send"></i> Send Money Now
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal: Transfer Success Confirmation -->
+<div id="modal-transfer-success" class="modal-backdrop">
+  <div class="modal-dialog" style="text-align: center;">
+    <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(16, 185, 129, 0.15); border: 2px solid var(--accent-emerald); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; color: var(--accent-emerald);">
+      <i data-lucide="check" style="width: 36px; height: 36px;"></i>
+    </div>
+
+    <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.35rem;">Payment Successful!</h2>
+    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">
+      Your funds have been transferred atomically and recorded in the double-entry ledger.
+    </p>
+
+    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.75rem; text-align: left;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 0.6rem;">
+        <span style="color: var(--text-muted); font-size: 0.85rem;">Amount Transferred:</span>
+        <span id="modal-success-amount" class="table-mono" style="font-weight: 700; color: var(--accent-emerald); font-size: 1.1rem;">₹0.00</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-bottom: 0.6rem;">
+        <span style="color: var(--text-muted); font-size: 0.85rem;">Recipient:</span>
+        <span id="modal-success-recipient" style="font-weight: 600;">Wallet #--</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-bottom: 0.6rem;">
+        <span style="color: var(--text-muted); font-size: 0.85rem;">Transaction ID:</span>
+        <span id="modal-success-txnid" class="table-mono" style="font-weight: 700; color: var(--primary);">#--</span>
+      </div>
+      <div id="modal-success-replayed" style="display: none; margin-top: 0.5rem; text-align: center;">
+        <span class="badge badge-info">IDEMPOTENT REPLAY (Existing Txn)</span>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 0.75rem;">
+      <button id="btn-send-again" class="btn btn-secondary btn-block">Send Another</button>
+      <button id="btn-view-statement" class="btn btn-primary btn-block">View Statement</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/transfer.js"></script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statement & Ledger History | VaultPay</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+    .filters-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex: 1;
+      max-width: 500px;
+    }
+    .pagination-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="nav-inner">
+      <a href="dashboard.html" class="nav-brand">
+        <img src="assets/logo.svg" alt="VaultPay Logo">
+        <span>VaultPay</span>
+        <span class="badge-beta">DBMS</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="dashboard.html" class="nav-link">
+          <i data-lucide="layout-dashboard"></i> Dashboard
+        </a>
+        <a href="transfer.html" class="nav-link">
+          <i data-lucide="send"></i> Send Money
+        </a>
+        <a href="bills.html" class="nav-link">
+          <i data-lucide="receipt"></i> Bills
+        </a>
+        <a href="statement.html" class="nav-link active">
+          <i data-lucide="file-text"></i> Statement
+        </a>
+        <a href="admin.html" class="nav-link admin-only-link" style="display: none;">
+          <i data-lucide="shield"></i> Admin
+        </a>
+      </nav>
+
+      <div class="nav-actions">
+        <div class="user-badge">
+          <div class="user-avatar">U</div>
+          <span class="nav-user-email">User</span>
+        </div>
+
+        <button class="btn-icon theme-toggle-btn" title="Toggle Theme">
+          <span class="theme-toggle-icon"><i data-lucide="sun"></i></span>
+        </button>
+
+        <button class="btn-icon logout-btn" title="Sign Out">
+          <i data-lucide="log-out"></i>
+        </button>
+
+        <button class="btn-icon mobile-nav-toggle" title="Menu">
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="card-header" style="margin-bottom: 1.5rem;">
+      <div>
+        <h1 style="font-size: 1.85rem; font-weight: 800; letter-spacing: -0.02em;">Account Statement</h1>
+        <p style="color: var(--text-secondary); font-size: 0.95rem;">
+          Append-only double-entry ledger entries showing full transaction traceability and post-tx balances
+        </p>
+      </div>
+      <button id="btn-export-csv" class="btn btn-secondary">
+        <i data-lucide="download"></i> Export to CSV
+      </button>
+    </div>
+
+    <div class="card">
+      <!-- Search & Filters -->
+      <div class="controls-row">
+        <div class="filters-group">
+          <input type="text" id="statement-search" class="form-control" placeholder="Search by Txn ID, Entry ID, Amount...">
+          <select id="filter-entry-type" class="form-control" style="max-width: 150px;">
+            <option value="ALL">All Types</option>
+            <option value="DEBIT">Debits Only</option>
+            <option value="CREDIT">Credits Only</option>
+          </select>
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-muted);">
+          15 entries per page
+        </div>
+      </div>
+
+      <!-- Statement Table -->
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Entry ID</th>
+              <th>Txn ID</th>
+              <th>Entry Type</th>
+              <th>Amount</th>
+              <th>Balance After</th>
+            </tr>
+          </thead>
+          <tbody id="statement-tbody">
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 2rem;">
+                <span class="spinner"></span> Loading ledger statement...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Bar -->
+      <div class="pagination-bar">
+        <button id="btn-prev-page" class="btn btn-secondary btn-sm" disabled>
+          &larr; Previous Page
+        </button>
+        <span id="pagination-current-page" style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); font-family: var(--font-mono);">
+          Page 1
+        </span>
+        <button id="btn-next-page" class="btn btn-secondary btn-sm">
+          Next Page &rarr;
+        </button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/statement.js"></script>
+</body>
+</html>

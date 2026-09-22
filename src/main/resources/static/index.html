@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Wallet & Payment System | Login</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .auth-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+    }
+    .auth-brand-side {
+      flex: 1.1;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(99, 102, 241, 0.25) 100%),
+                  radial-gradient(circle at 20% 30%, rgba(6, 182, 212, 0.2) 0%, transparent 60%);
+      padding: 4rem 3.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      border-right: 1px solid var(--border-color);
+    }
+    .auth-form-side {
+      flex: 0.9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 2rem;
+      position: relative;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+    }
+    .auth-tabs {
+      display: flex;
+      background: var(--bg-tertiary);
+      padding: 0.35rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 2rem;
+      border: 1px solid var(--border-color);
+    }
+    .auth-tab {
+      flex: 1;
+      padding: 0.65rem 1rem;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-align: center;
+    }
+    .auth-tab.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+    }
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .feature-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .top-right-tools {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    @media (max-width: 900px) {
+      .auth-brand-side { display: none; }
+      .auth-form-side { flex: 1; padding: 2rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="auth-wrapper">
+  <!-- Left Brand Showcase -->
+  <div class="auth-brand-side">
+    <div>
+      <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 3.5rem;">
+        <img src="assets/logo.svg" alt="Digital Wallet" style="width: 44px; height: 44px;">
+        <div>
+          <h2 style="font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em;">VaultPay</h2>
+          <span style="font-size: 0.75rem; color: var(--accent-cyan); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">DBMS Capstone System</span>
+        </div>
+      </div>
+
+      <h1 style="font-size: 2.75rem; font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 1.25rem;">
+        Atomic Financial Transactions, <br><span style="background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Guaranteed by DBMS.</span>
+      </h1>
+      <p style="font-size: 1.05rem; color: var(--text-secondary); max-width: 520px; margin-bottom: 3rem;">
+        A high-concurrency payment engine engineered with MySQL 8 row-level locking, deadlock avoidance, append-only double-entry ledger, and trigger-fed auditability.
+      </p>
+
+      <div style="max-width: 480px;">
+        <div class="feature-item">
+          <div class="feature-icon"><i data-lucide="shield-check"></i></div>
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 700;">SELECT ... FOR UPDATE Locking</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Pessimistic row-level exclusive locks prevent lost updates and race conditions during simultaneous transfers.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon"><i data-lucide="shuffle"></i></div>
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 700;">Mathematical Deadlock Avoidance</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Ascending ID lock ordering eliminates Coffman's circular wait condition on concurrent transfers.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon"><i data-lucide="repeat"></i></div>
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 700;">End-to-End Idempotency</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Application caching backed by a database-level UNIQUE key prevents duplicate debits on retries.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 1.5rem;">
+      <span>Powered by Java 17 & MySQL 8</span>
+      <span>•</span>
+      <span>HikariCP Pooled JDBC</span>
+      <span>•</span>
+      <span>JWT + BCrypt</span>
+    </div>
+  </div>
+
+  <!-- Right Form Container -->
+  <div class="auth-form-side">
+    <div class="top-right-tools">
+      <button class="btn-icon theme-toggle-btn" title="Toggle Theme">
+        <span class="theme-toggle-icon"><i data-lucide="sun"></i></span>
+      </button>
+    </div>
+
+    <div class="auth-card">
+      <div style="margin-bottom: 2rem; text-align: center;">
+        <div style="display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: var(--radius-lg); background: var(--bg-card); border: 1px solid var(--border-color); margin-bottom: 1rem; box-shadow: var(--shadow-sm);">
+          <img src="assets/logo.svg" alt="VaultPay Logo" style="width: 32px; height: 32px;">
+        </div>
+        <h2 style="font-size: 1.65rem; font-weight: 800; letter-spacing: -0.02em;">Welcome to VaultPay</h2>
+        <p style="font-size: 0.9rem; color: var(--text-secondary);">Access your wallet dashboard and payments</p>
+      </div>
+
+      <!-- Tab Switcher -->
+      <div class="auth-tabs">
+        <button id="tab-login" class="auth-tab active">Sign In</button>
+        <button id="tab-register" class="auth-tab">Create Account</button>
+      </div>
+
+      <!-- Form: Login -->
+      <form id="form-login">
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email Address</label>
+          <input type="email" id="login-email" class="form-control" placeholder="name@example.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password</label>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••••••" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" id="btn-login-submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 1.5rem;">
+          Sign In
+        </button>
+
+        <!-- Demo credentials helper -->
+        <div style="margin-top: 1.75rem; padding: 0.85rem; border-radius: var(--radius-md); background: var(--bg-tertiary); border: 1px dashed var(--border-color); font-size: 0.78rem;">
+          <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.4rem;">
+            <i data-lucide="key-round" style="width: 14px; height: 14px; color: var(--accent-cyan);"></i> Quick Demo Credentials
+          </div>
+          <div style="color: var(--text-secondary); line-height: 1.6;">
+            <div><strong>User:</strong> <span class="table-mono">priya.patel@example.com</span> / <span class="table-mono">Password@123</span></div>
+            <div><strong>Admin:</strong> <span class="table-mono">rohan.sharma@example.com</span> / <span class="table-mono">Password@123</span></div>
+            <div style="margin-top: 0.25rem; font-size: 0.72rem; color: var(--text-muted);">(Base seed: <span class="table-mono">aarav@example.com</span> / <span class="table-mono">password123</span>)</div>
+          </div>
+        </div>
+      </form>
+
+      <!-- Form: Register -->
+      <form id="form-register" style="display: none;">
+        <div class="form-group">
+          <label class="form-label" for="reg-name">Full Name</label>
+          <input type="text" id="reg-name" class="form-control" placeholder="Aarav Sharma" required autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-email">Email Address</label>
+          <input type="email" id="reg-email" class="form-control" placeholder="aarav@example.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-phone">Phone Number (Optional)</label>
+          <input type="tel" id="reg-phone" class="form-control" placeholder="9876543210" autocomplete="tel">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-password">Password (min 6 characters)</label>
+          <input type="password" id="reg-password" class="form-control" placeholder="••••••••••••" minlength="6" required autocomplete="new-password">
+        </div>
+
+        <button type="submit" id="btn-register-submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 1.5rem;">
+          Create Account & Wallet
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>
