@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/wallet_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${DB_USERNAME:wallet_user}
+    password: ${DB_PASSWORD:wallet_pass}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      pool-name: WalletHikariPool
+      auto-commit: false
+
+server:
+  port: 8080
+
+jwt:
+  secret: ${JWT_SECRET:change-me-to-a-long-random-secret-at-least-256-bits-long-please}
+  expiry: 86400000
+
+logging:
+  level:
+    com.wallet: DEBUG
+    org.springframework.jdbc: INFO
+    com.zaxxer.hikari: INFO

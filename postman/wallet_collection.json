@@ -1,0 +1,208 @@
+{
+  "info": {
+    "name": "Digital Wallet & Payment System",
+    "description": "Wallet API: register/login (JWT auto-captured), wallet, P2P transfer, bills, admin.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "token", "value": "" },
+    { "key": "fromWalletId", "value": "1" },
+    { "key": "toWalletId", "value": "2" },
+    { "key": "billId", "value": "1" },
+    { "key": "txnId", "value": "1" },
+    { "key": "walletId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Aarav Sharma\",\n  \"email\": \"aarav@example.com\",\n  \"phone\": \"9000000001\",\n  \"password\": \"password123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.token) { pm.collectionVariables.set('token', json.token); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"aarav@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.token) { pm.collectionVariables.set('token', json.token); }"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Wallet",
+      "item": [
+        {
+          "name": "My wallet",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/wallet/me",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Statement",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/wallet/me/statement?page=0&size=20",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Top-up",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/wallet/topup",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"amount\": 2000.00\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transfer",
+      "item": [
+        {
+          "name": "P2P transfer",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/transfer",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "X-Idempotency-Key", "value": "{{$guid}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromWalletId\": 1,\n  \"toWalletId\": 2,\n  \"amount\": 500.00,\n  \"remarks\": \"lunch money\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get transfer",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/transfer/{{txnId}}",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bills",
+      "item": [
+        {
+          "name": "My bills",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/bills/my",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Pay bill",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/bills/{{billId}}/pay",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "X-Idempotency-Key", "value": "{{$guid}}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "List wallets",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/admin/wallets",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Freeze wallet",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/admin/wallets/{{walletId}}/freeze",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Unfreeze wallet",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/admin/wallets/{{walletId}}/unfreeze",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Audit log",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/admin/audit?page=0&size=50",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Daily report",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/admin/reports/daily?date=2026-09-11",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Top users",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/admin/reports/top-users",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        }
+      ]
+    }
+  ]
+}
