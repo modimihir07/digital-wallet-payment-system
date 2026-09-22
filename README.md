@@ -219,7 +219,7 @@ If you load [`sql/06_seed_demo_data.sql`](sql/06_seed_demo_data.sql), the follow
 | Role | Name | Email | Password | Initial Balance |
 |---|---|---|---|---|
 | **Admin** | Rohan Sharma | `rohan.sharma@example.com` | `Password@123` | ₹25,000.00 |
-| **Admin** | Priya Patel | `priya.patel@example.com` | `Password@123` | ₹18,500.00 |
+| **Admin** | Priya Verma | `priya.verma@example.com` | `Password@123` | ₹18,500.00 |
 | **User** | Vikram Singh | `vikram.singh@example.com` | `Password@123` | ₹12,000.00 |
 | **User** | Sneha Deshmukh | `sneha.deshmukh@example.com` | `Password@123` | ₹8,450.00 |
 | **User** | Ananya Iyer | `ananya.iyer@example.com` | `Password@123` | ₹15,750.00 |
